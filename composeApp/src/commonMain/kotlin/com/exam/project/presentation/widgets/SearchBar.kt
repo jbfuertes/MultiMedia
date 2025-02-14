@@ -2,13 +2,14 @@ package com.exam.project.presentation.widgets
 
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
@@ -33,6 +34,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import multimedia.composeapp.generated.resources.hint_close
 
 @Composable
@@ -103,20 +105,23 @@ fun SearchBar(
             ) {
                 LazyColumn {
                     itemsIndexed(searchHistory) { index ,item ->
-                        Text(
+                        Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(8.dp)
-                                .selectable(
-                                    selected = true,
-                                    onClick = {
-                                        onSearchQueryChange(item)
-                                        currentFocus.clearFocus()
-                                    }
-                                ),
-                            textAlign = TextAlign.Start,
-                            text = item
-                        )
+                                .clickable {
+                                    onSearchQueryChange(item)
+                                    currentFocus.clearFocus()
+                                }
+                        ) {
+                            Text(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                textAlign = TextAlign.Start,
+                                fontSize = 14.sp,
+                                text = item
+                            )
+                        }
                         if (index < searchHistory.size) {
                             HorizontalDivider()
                         }
