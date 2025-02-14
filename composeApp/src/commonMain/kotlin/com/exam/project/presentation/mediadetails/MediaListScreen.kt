@@ -1,4 +1,5 @@
 package com.exam.project.presentation.mediadetails
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -6,14 +7,24 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.exam.project.domain.Media
 import org.koin.compose.viewmodel.koinViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.exam.project.presentation.widgets.MediaList
 import com.exam.project.presentation.widgets.SearchBar
+import multimedia.composeapp.generated.resources.Res
+import multimedia.composeapp.generated.resources.result_empty
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun MediaListScreenRoot(
@@ -41,9 +52,62 @@ private fun MediaListScreen(
     onAction: (MediaListAction) -> Unit
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
+    val lazyListState = rememberLazyListState()
+
+    LaunchedEffect(state.mediaList) {
+        lazyListState.animateScrollToItem(0)
+    }
 
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .statusBarsPadding()
+            .padding(top = 100.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            when {
+                state.isLoading -> CircularProgressIndicator()
+
+                state.errorMessage.isNotBlank() -> {
+                    Text(
+                        text = state.errorMessage,
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
+
+                state.mediaList.isEmpty() -> {
+                    Text(
+                        text = stringResource(Res.string.result_empty),
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
+
+                else -> {
+                    MediaList(
+                        modifier = Modifier.fillMaxSize(),
+                        mediaList = state.mediaList,
+                        scrollState = lazyListState,
+                        onMediaClick = {
+                            onAction(MediaListAction.OnMediaClicked(it))
+                        }
+                    )
+                }
+
+            }
+        }
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
             .statusBarsPadding()
     ) {
         Spacer(modifier = Modifier.size(16.dp))
