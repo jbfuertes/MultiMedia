@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.KeyboardActions
@@ -28,6 +27,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
@@ -42,10 +42,11 @@ fun SearchBar(
     modifier: Modifier = Modifier,
     searchQuery: String,
     searchHistory: List<String>,
+    focusManager: FocusManager = LocalFocusManager.current,
     onSearchQueryChange: (String) -> Unit,
-    onImeSearch: () -> Unit
+    onImeSearch: () -> Unit,
+    onFocusChange: (Boolean) -> Unit
 ) {
-    val currentFocus = LocalFocusManager.current
     var isFocused by remember { mutableStateOf(false) }
 
     Column(
@@ -57,6 +58,7 @@ fun SearchBar(
                 .minimumInteractiveComponentSize()
                 .onFocusChanged {
                     isFocused = it.isFocused
+                    onFocusChange(it.isFocused)
                 },
             value = searchQuery,
             singleLine = true,
@@ -89,7 +91,7 @@ fun SearchBar(
             keyboardActions = KeyboardActions(
                 onSearch = {
                     onImeSearch()
-                    currentFocus.clearFocus()
+                    focusManager.clearFocus()
                 }
             ),
             keyboardOptions = KeyboardOptions(
@@ -98,19 +100,22 @@ fun SearchBar(
             ),
         )
 
-        if (isFocused) {
+        if (isFocused && searchHistory.isNotEmpty()) {
             Surface(
                 modifier = modifier,
                 shadowElevation = 8.dp
             ) {
                 LazyColumn {
-                    itemsIndexed(searchHistory) { index ,item ->
+                    itemsIndexed(
+                        items = searchHistory,
+                        key = { _, item -> item }
+                    ) { index ,item ->
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable {
                                     onSearchQueryChange(item)
-                                    currentFocus.clearFocus()
+                                    focusManager.clearFocus()
                                 }
                         ) {
                             Text(
