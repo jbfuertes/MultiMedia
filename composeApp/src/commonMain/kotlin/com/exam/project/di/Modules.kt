@@ -13,8 +13,11 @@ import com.exam.project.domain.usecase.GetMediaList
 import com.exam.project.domain.usecase.GetSearchHistory
 import com.exam.project.domain.usecase.SaveMediaList
 import com.exam.project.domain.usecase.SaveSearchQuery
+import com.exam.project.presentation.mediadetails.MediaDetailsViewModel
+import com.exam.project.presentation.medialist.MediaListViewModel
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
@@ -32,4 +35,6 @@ val sharedModule = module {
     singleOf(::CheckHasMoreToLoad).bind()
     singleOf(::GetMedia).bind()
 
+    viewModelOf(::MediaListViewModel)
+    viewModelOf(::MediaDetailsViewModel)
 }
