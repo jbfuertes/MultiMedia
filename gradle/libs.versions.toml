@@ -24,6 +24,7 @@ ksp = "2.1.0-1.0.29"
 sqlite = "2.5.0-alpha11"
 room = "2.7.0-alpha11"
 lifecycleViewmodelAndroid = "2.8.7"
+mockk = "1.13.2"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -67,6 +68,7 @@ androidx-room-runtime = { group = "androidx.room", name = "room-runtime", versio
 sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
 androidx-lifecycle-viewmodel-android = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-android", version.ref = "lifecycleViewmodelAndroid" }
 
+kotlin-test-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines"}
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

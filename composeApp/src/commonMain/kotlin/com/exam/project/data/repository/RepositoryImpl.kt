@@ -27,8 +27,7 @@ class RepositoryImpl(
         withQuery: String,
         hasNext: Boolean
     ): Result<Unit> {
-        localSource.saveMediaList(mediaList, withQuery, hasNext)
-        return Result.success(Unit)
+        return localSource.saveMediaList(mediaList, withQuery, hasNext)
     }
 
     override suspend fun getCurrentListSize(withQuery: String): Result<Int> {
