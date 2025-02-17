@@ -1,14 +1,7 @@
-This is a Kotlin Multiplatform project targeting Android, iOS.
+Limitations while doing this project
 
-* `/composeApp` is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - `commonMain` is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    `iosMain` would be the right folder for such calls.
-
-* `/iosApp` contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform, 
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
-
-
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…# MultiMedia
+* This project is developed using windows machine and cannot test ios part of the app so I didn't fix any ios issues (ie platform module)
+* Due to time constraint, only use cases were tested. Use cases in this project are mostly `glue code` and mostly are expected to return a success result only so unit tests looks a bit ridiculous.
+* Search Api returns more than the input limit so the app filters the excess.
+* Search Api sometimes returns items with null `kind` which is required based on the instructions so this items are filtered out.
+* Search Api only has the parameter `limit` and therefore cannot implement a paginated approach. The workaround is increasing the limit every call.
