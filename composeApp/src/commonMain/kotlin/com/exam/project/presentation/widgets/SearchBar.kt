@@ -108,7 +108,7 @@ fun SearchBar(
                 LazyColumn {
                     itemsIndexed(
                         items = searchHistory,
-                        key = { _, item -> item }
+                        key = { index, item -> "$item-$index" }
                     ) { index ,item ->
                         Box(
                             modifier = Modifier
