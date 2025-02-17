@@ -1,35 +1,64 @@
 package com.exam.project
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import org.jetbrains.compose.resources.painterResource
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigation
+import androidx.navigation.compose.rememberNavController
+import com.exam.project.presentation.mediadetails.MediaDetailsScreenRoot
+import com.exam.project.presentation.mediadetails.MediaDetailsViewModel
+import com.exam.project.presentation.medialist.MediaListScreenRoot
+import com.exam.project.presentation.medialist.MediaListViewModel
+import com.exam.project.presentation.route.Route
 import org.jetbrains.compose.ui.tooling.preview.Preview
-
-import multimedia.composeapp.generated.resources.Res
-import multimedia.composeapp.generated.resources.compose_multiplatform
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 @Preview
 fun App() {
+    val navController = rememberNavController()
     MaterialTheme {
-        var showContent by remember { mutableStateOf(false) }
-        Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-            Button(onClick = { showContent = !showContent }) {
-                Text("Click me!")
-            }
-            AnimatedVisibility(showContent) {
-                val greeting = remember { Greeting().greet() }
-                Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                    Image(painterResource(Res.drawable.compose_multiplatform), null)
-                    Text("Compose: $greeting")
+        NavHost(
+            navController = navController,
+            startDestination = Route.MediaGraph
+        ) {
+            navigation<Route.MediaGraph>(
+                startDestination = Route.MediaListScreen
+            ) {
+                composable<Route.MediaListScreen>(
+                    popExitTransition = { slideOutHorizontally() },
+                    exitTransition = { slideOutHorizontally() }
+                ) {
+
+                    val viewModel = koinViewModel<MediaListViewModel>()
+
+                    MediaListScreenRoot(
+                        viewModel = viewModel,
+                        onMediaClick = {
+                            navController.navigate(
+                                Route.MediaDetailsScreen(it.id)
+                            )
+                        }
+                    )
+                }
+
+                composable<Route.MediaDetailsScreen>(
+                    enterTransition = {
+                        slideInHorizontally { initialOffset -> initialOffset }
+                    },
+                    exitTransition = {
+                        slideOutHorizontally { initialOffset -> initialOffset }
+                    }
+                ) {
+
+                    val viewModel = koinViewModel<MediaDetailsViewModel>()
+
+                    MediaDetailsScreenRoot(
+                        viewModel = viewModel
+                    )
                 }
             }
         }
